@@ -58,11 +58,15 @@ public class UploadDownloadWithFileSystemController {
         MediaType contentType = MediaType.IMAGE_JPEG;
 
         // devuelve el URI como un attachment
+        /* Hay dos tipos de CONTENT DISPOSITION
+        * INLINE: el resultado lo renderiza en el browser
+        * ATTACHMENT: el resultado lo descarga del browser*/
         return  ResponseEntity.ok()
                 .contentType(contentType)
                 .header(HttpHeaders
                         .CONTENT_DISPOSITION,
                         "attachment;fileName="+resource.getFilename())
+                        //"inline;fileName="+resource.getFilename())
                 .body(resource);
 
     }
