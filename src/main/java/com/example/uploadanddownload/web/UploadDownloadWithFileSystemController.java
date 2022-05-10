@@ -14,6 +14,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 // Para descargar y subir archivos en carpeta local en proyecto
@@ -80,5 +83,34 @@ public class UploadDownloadWithFileSystemController {
                         //"inline;fileName="+resource.getFilename())
                 .body(resource);
 
+    }
+
+    @PostMapping("/multiple/upload")
+    List<FileUploadResponse> multipleUpload(@RequestParam("files") MultipartFile[] files){
+        List<FileUploadResponse> uploadResponseList = new ArrayList<>();
+
+        // recorre el array de archivos
+        Arrays.asList(files)
+                .forEach(file -> {
+                    // Este es el servicio que almacena el archivo localmente en el proyecto
+                    String fileName = fileStorageService.storageFile(file);
+
+                    // http://localhost:8082/[download/abc.jpg] <-----
+                    // esta accion lo que hace es crear un URL para descargar el archivo
+                    // almacenado en localmente en el proyecto
+                    String url = ServletUriComponentsBuilder.fromCurrentContextPath()
+                            .path("/download/")
+                            .path(fileName)
+                            .toUriString();
+
+                    String contentType = file.getContentType();
+
+                    // Esta clase un un DTO hecho en casa
+                    FileUploadResponse response = new FileUploadResponse(fileName, contentType, url);
+
+                    uploadResponseList.add(response);
+
+                });
+        return uploadResponseList;
     }
 }
