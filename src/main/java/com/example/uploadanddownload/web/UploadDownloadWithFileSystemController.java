@@ -47,7 +47,7 @@ public class UploadDownloadWithFileSystemController {
 
     }
 
-    // obtenemos el archivo almacenado localmente
+    // obtenemos el archivo almacenado localmente.
     @GetMapping("/download/{fileName}")
     ResponseEntity<Resource> downLoadSingleFile(@PathVariable String fileName){
 
