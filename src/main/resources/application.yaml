@@ -1,0 +1,7 @@
+server:
+  port: 8082
+
+#crea una carpeta dentro del proyecto para almacenar archivos
+file:
+  storage:
+    location: fileStorage
