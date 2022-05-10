@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 
 // Para descargar y subir archivos en carpeta local en proyecto
@@ -49,20 +50,30 @@ public class UploadDownloadWithFileSystemController {
 
     // obtenemos el archivo almacenado localmente.
     @GetMapping("/download/{fileName}")
-    ResponseEntity<Resource> downLoadSingleFile(@PathVariable String fileName){
+    ResponseEntity<Resource> downLoadSingleFile(@PathVariable String fileName, HttpServletRequest request){
 
         // Resuelve el argumento como un URI
         Resource resource = (Resource) fileStorageService.downloadFile(fileName);
 
-        // para este ejemplo definimos tipo JPEG
-        MediaType contentType = MediaType.IMAGE_JPEG;
+        // Se define el tipo de archivo
+        String mimeType;
+        try {
+            // dinamicamente establese el tipo de MIME
+            mimeType = request.getServletContext()
+                    .getMimeType(
+                            resource.getFile().getAbsolutePath()
+                    );
+        } catch (IOException e) {
+            mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        }
+        //MediaType contentType = MediaType.IMAGE_JPEG;
 
         // devuelve el URI como un attachment
         /* Hay dos tipos de CONTENT DISPOSITION
         * INLINE: el resultado lo renderiza en el browser
         * ATTACHMENT: el resultado lo descarga del browser*/
         return  ResponseEntity.ok()
-                .contentType(contentType)
+                .contentType(MediaType.parseMediaType(mimeType))
                 .header(HttpHeaders
                         .CONTENT_DISPOSITION,
                         "attachment;fileName="+resource.getFilename())
