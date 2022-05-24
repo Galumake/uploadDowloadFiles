@@ -8,15 +8,19 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 // Para descargar y subir archivos en carpeta local en proyecto
@@ -85,6 +89,7 @@ public class UploadDownloadWithFileSystemController {
 
     }
 
+    // carga barios archivos
     @PostMapping("/multiple/upload")
     List<FileUploadResponse> multipleUpload(@RequestParam("files") MultipartFile[] files){
 
@@ -118,5 +123,33 @@ public class UploadDownloadWithFileSystemController {
 
                 });
         return uploadResponseList;
+    }
+
+
+    // Empaqueta los arcchivos y los envia como un attachment de tipo ZIP
+    @GetMapping("zipDownload")
+    void zipDowload(@RequestParam("fileName") String[] files, HttpServletResponse response) throws IOException {
+        // Directo al browser con este ejemplo: http://localhost:8082/zipDownload?fileName=full%20scan.png%fileName=Ademdum5.pdf
+
+        try(ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())){
+            Arrays.asList(files)
+                    .stream()
+                    .forEach( file -> {
+                        Resource resource = fileStorageService
+                                .downloadFile(file); // resuelve la ruta del archivo
+                        // Tomo el archivo y lo comprime
+                        ZipEntry zipEntry = new ZipEntry(resource.getFilename());
+                        try {
+                            zipEntry.setSize(resource.contentLength());
+                            // lo argurega al zip y espera por otro
+                            zos.putNextEntry(zipEntry);
+                            StreamUtils.copy(resource.getInputStream(), zos);
+                            zos.closeEntry();
+                        } catch (IOException e) {
+                            System.out.println("some exception while zipping");
+                        }
+                    });
+            zos.finish();
+        }
     }
 }
