@@ -5,3 +5,14 @@ server:
 file:
   storage:
     location: fileStorage
+
+#Configuracion para el tamaño de los archivos
+#location: es una ubicacion intermedia o provicional
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      location: temp123
+      file-size-threshold: 5MB
+      max-file-size: 5MB
+      max-request-size: 20MB

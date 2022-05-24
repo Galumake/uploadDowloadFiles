@@ -87,6 +87,12 @@ public class UploadDownloadWithFileSystemController {
 
     @PostMapping("/multiple/upload")
     List<FileUploadResponse> multipleUpload(@RequestParam("files") MultipartFile[] files){
+
+        System.out.println("file size: "+files.length);
+        if (files.length > 7){
+            throw new RuntimeException("too many files");
+        }
+
         List<FileUploadResponse> uploadResponseList = new ArrayList<>();
 
         // recorre el array de archivos
