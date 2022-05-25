@@ -5,3 +5,4 @@ server:
 file:
   storage:
     location: fileStorage
+
