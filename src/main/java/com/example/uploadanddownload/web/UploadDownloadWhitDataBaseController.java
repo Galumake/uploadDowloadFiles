@@ -26,7 +26,7 @@ public class UploadDownloadWhitDataBaseController {
 
     // Almacena un archivo en la basde de datos y crea un url para luego descargarlo
     @PostMapping("single/uploadDb")
-    FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file) throws IOException{
+    FileUploadResponse singleFileUpload1(@RequestParam("file") MultipartFile file) throws IOException{
 
         String name = StringUtils.cleanPath(file.getOriginalFilename());
 
