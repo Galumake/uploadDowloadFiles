@@ -86,7 +86,6 @@ public class UploadDownloadWithFileSystemController {
                         "attachment;fileName="+resource.getFilename())
                         //"inline;fileName="+resource.getFilename())
                 .body(resource);
-
     }
 
     // carga barios archivos
