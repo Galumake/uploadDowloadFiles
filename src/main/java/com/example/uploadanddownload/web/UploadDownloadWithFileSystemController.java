@@ -23,6 +23,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 
+
 // Para descargar y subir archivos en carpeta local en proyecto
 // fuente: https://www.youtube.com/watch?v=LUq4UtsGcyU&list=PLq3uEqRnr_2H2KjoG2WHY9Yzfq-ZkzN3X&index=1
 @RestController
@@ -60,7 +61,7 @@ public class UploadDownloadWithFileSystemController {
     ResponseEntity<Resource> downLoadSingleFile(@PathVariable String fileName, HttpServletRequest request){
 
         // Resuelve el argumento como un URI
-        Resource resource = (Resource) fileStorageService.downloadFile(fileName);
+        Resource resource = fileStorageService.downloadFile(fileName);
 
         // Se define el tipo de archivo
         String mimeType;
